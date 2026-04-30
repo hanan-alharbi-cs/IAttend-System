@@ -1,0 +1,16 @@
+fastapi
+uvicorn
+python-multipart
+numpy
+opencv-python-headless
+supabase
+pillow
+tensorflow
+sqlmodel
+pydantic
+keras-facenet
+beautifulsoup4==4.12.3
+lxml==5.2.6
+easyocr
+
+
