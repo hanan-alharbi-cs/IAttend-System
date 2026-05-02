@@ -1,17 +1,17 @@
 import io
 import os
 import sys
-# -------------- 
 import cv2
 import numpy as np
 from fastapi import UploadFile, File, HTTPException
 from sqlmodel import select,Session
 from supabase import create_client, Client
-#--------------------
 from models import Student
 from database import engine
+from supabase import create_client, Client
 from siamese_model import create_encoder
-#--------------------
+
+
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
@@ -23,13 +23,13 @@ HAARCASCADE_PATH = cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'
 _model = None
 _face_cascade = None
 
-# Lazy loads Siamese encoder, applies pre-trained weights, sets inference mode.
+# Lazy loads Siamese encoder, applies weights file, sets inference mode.
 def get_model():
     global _model
     if _model is None:
         _model = create_encoder()
         
-        # Load pre-trained weights if they exist
+        # Load  weights file 
         if os.path.exists(MODEL_WEIGHTS_PATH):
             _model.load_weights(MODEL_WEIGHTS_PATH)
         
@@ -89,7 +89,7 @@ def extract_embedding(face_image: np.ndarray) -> np.ndarray:
     # Add batch dimension: (1, 160, 160, 3)
     face_batch = np.expand_dims(face_image, axis=0)
     
-    # Extract embedding  and to prevent server crashing
+    # Extract embedding 
     embedding = model(face_batch, training=False)
     
     # Squeeze to remove batch dimension
@@ -98,11 +98,8 @@ def extract_embedding(face_image: np.ndarray) -> np.ndarray:
     return embedding
 
 
-# ============================================================
-# Supabase Database Integration
-# ============================================================
-from supabase import create_client, Client
 
+# Supabase Database Integration
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
@@ -127,7 +124,7 @@ async def register_face_biometric(
     user_id: str,
     image_file: UploadFile = File(...)
 ):
-# open session to find to saerch for the right user id to this student id
+# open session saerch for the right user id to this student id
  with Session(engine) as session:
    try:
        student_stmt = select(Student).where(Student.user_id == user_id)
