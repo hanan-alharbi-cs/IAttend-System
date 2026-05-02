@@ -42,14 +42,10 @@ def create_session(body: CreateSessionRequest):
     if not faculty_data.data:
         raise HTTPException(status_code=404, detail="Faculty not found")
     
-    f_id = faculty_data.data["faculty_id"] # هذا هو الرقم (int)
+    f_id = faculty_data.data["faculty_id"] 
 
-    # 2. التأكد من المادة باستخدام الرقم اللي جبناه
-    link = supabase.table("coursefacultylink") \
-        .select("*") \
-        .eq("course_id", body.course_id) \
-        .eq("faculty_id", f_id) \
-        .execute()
+   
+    link = supabase.table("coursefacultylink").select("*").eq("course_id", body.course_id).eq("faculty_id", f_id).execute()
     if not link.data:
         raise HTTPException(status_code=403, detail="not your course")
 
