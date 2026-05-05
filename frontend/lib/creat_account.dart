@@ -73,15 +73,15 @@ Future<void> createAccount() async
         'user_type': assignedRole,
       });
       final SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('user_id', id);// save the user id(studeint or faculity ) without emile
-      await prefs.setString('full_name', name);// save the full name
+      await prefs.setString('user_id', res.user!.id); 
+      await prefs.setString('student_academic_id', id); 
+      await prefs.setString('full_name', name);
       await prefs.setString('user_email', virtualEmail);
-      await prefs.setString('role', assignedRole);//dave the role student or faculity
-      await prefs.setString('supabase_uid', res.user!.id);// save the UUID 
+      await prefs.setString('role', assignedRole);
       await prefs.setBool('is_logged_in', true);
       
 
-      if (!mounted) return;// to make sure the page stil active
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar
       (
       const SnackBar(content: Text("   Account created successfully"), backgroundColor: Colors.green),);
