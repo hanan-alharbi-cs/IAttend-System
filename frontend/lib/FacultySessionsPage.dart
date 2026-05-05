@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:iattend_frontend/utils/constants.dart';
 import 'create_session_page.dart'; 
 import 'edit_session_seeting.dart';
+import 'live_attendance_page.dart';
 
 class FacultySessionsPage extends StatefulWidget 
 {
@@ -37,6 +38,27 @@ class _FacultySessionsPageState extends State<FacultySessionsPage>
   }
 
   
+  void _openLiveAttendance(dynamic session) 
+  {
+    final String sessionId = session['session_id']?.toString() ?? "";
+    final String sessionName = session['session_name']?.toString() ?? "Session";
+    if (sessionId.isEmpty) {
+      return;
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => LiveAttendancePage(
+          sessionId: sessionId,
+          courseName: widget.courseName,
+          sessionName: sessionName,
+        ),
+      ),
+    );
+  }
+
+
   Future<void> _getSessions() async 
   {
     try 
@@ -75,7 +97,7 @@ class _FacultySessionsPageState extends State<FacultySessionsPage>
     }
   }
   
-  Future<void> _updateSessionStatus(String session_id, String newStatus) async
+  Future<bool> _updateSessionStatus(String session_id, String newStatus) async
    {
   try 
   {
@@ -87,16 +109,18 @@ class _FacultySessionsPageState extends State<FacultySessionsPage>
       body: jsonEncode({"status": newStatus}),
     );
 
+    
     if (response.statusCode == 200) 
     {
       await _getSessions();
-      
+      return true;
     }
   } 
   catch (e) 
   {
-    print("Error: $e");
+    debugPrint("Error: $e");
   }
+  return false;
 }
 
 @override
@@ -159,19 +183,18 @@ Widget build(BuildContext context)
     ),
   );
 }
-
 Widget _buildSessionCard(dynamic session) 
 {
   String currentStatus = session['status']; 
-  String session_id = session['session_id']?.toString() ?? "";
+  String sessionId = session['session_id']?.toString() ?? "";
   String sessionTitle = session['session_name'] ?? "Unnamed Session";
 
   return Card(
-    key: ValueKey(session_id),
-    color: Colors.white.withOpacity(0.1),
+    key: ValueKey(sessionId),
+    color: Colors.white.withValues(alpha: 0.1),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(15),
-      side: BorderSide(color: Colors.white.withOpacity(0.2)),
+      side: BorderSide(color: Colors.white.withValues(alpha: 0.2)),
     ),
     margin: const EdgeInsets.only(bottom: 15),
     child: Padding(
@@ -213,10 +236,13 @@ Widget _buildSessionCard(dynamic session)
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               ElevatedButton.icon(
-                onPressed: (currentStatus == 'active') ? null : () 
+                onPressed: (currentStatus == 'active') ? null : () async
                 {
-                  _updateSessionStatus(session_id, 'active');
-                  print("Navigating to Live Attendance...");
+                  final updated = await _updateSessionStatus(sessionId, 'active');
+                  if (updated) 
+                  {
+                    _openLiveAttendance(session);
+                  }
                 },
                 icon: const Icon(Icons.play_arrow, size: 18),
                 label: const Text("Start"),
@@ -228,9 +254,22 @@ Widget _buildSessionCard(dynamic session)
               ),
               const SizedBox(width: 10),
               ElevatedButton.icon(
-                onPressed: (currentStatus == 'ended') ? null : () 
+                onPressed: currentStatus == 'active'
+                    ? () => _openLiveAttendance(session)
+                    : null,
+                icon: const Icon(Icons.people_alt_outlined, size: 18),
+                label: const Text("View Live"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blueAccent,
+                  foregroundColor: Colors.white,
+                  disabledBackgroundColor: Colors.white10,
+                ),
+              ),
+              const SizedBox(width: 10),
+              ElevatedButton.icon(
+                onPressed: (currentStatus == 'ended') ? null : () async
                 {
-                  _updateSessionStatus(session_id, 'ended');
+                  await _updateSessionStatus(sessionId, 'ended');
                 },
                 icon: const Icon(Icons.stop, size: 18),
                 label: const Text("End"),
