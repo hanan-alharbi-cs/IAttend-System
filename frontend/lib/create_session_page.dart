@@ -90,6 +90,7 @@ class _creatSessionPageState extends State<creatSessionPage>
           "location_enabled": !isOnline,
           "latitude": isOnline ? null : _latitude,
           "longitude": isOnline ? null : _longitude,
+          "session_type": isOnline ? "Online" : "In-Person",
         }),
       );
 
