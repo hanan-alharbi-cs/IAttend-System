@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:file_picker/file_picker.dart';
 import 'package:iattend_frontend/utils/constants.dart';
 
 class LiveAttendancePage extends StatefulWidget 
@@ -139,10 +141,10 @@ class _LiveAttendancePageState extends State<LiveAttendancePage>
 }
 
 
-  Future<void> _generatePdf() async {
+  Future<void> _generatePdf() async 
+  {
     final pdf = pw.Document();
 
-    
     final headers = ['Academic ID', 'Name', 'Status', 'Check-in Time'];
     final data = _students.map((student) 
     {
@@ -204,11 +206,45 @@ class _LiveAttendancePageState extends State<LiveAttendancePage>
       ),
     );
 
-    // عرض معاينة الملف للطباعة أو الحفظ
+    final bytes = await pdf.save();
     await Printing.layoutPdf(
       onLayout: (PdfPageFormat format) async => pdf.save(),
       name: '${widget.sessionName}_Attendance_Report.pdf',
     );
+
+
+    String? outputFile = await FilePicker.platform.saveFile(
+    dialogTitle: 'save',
+    fileName: '${widget.sessionName}_Attendance_Report.pdf',
+    type: FileType.custom,
+    allowedExtensions: ['pdf'],
+  );
+
+  if (outputFile != null)
+  {
+     try 
+     {
+      final file = File(outputFile);
+      await file.writeAsBytes(bytes); 
+      
+      if (mounted) 
+      {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("file saved")),
+        );
+      }
+    }
+    catch (e) 
+    {
+      print("Error saving file: $e");
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("saving failed $e")),
+        );
+      }
+    }
+  }
+
   }
 
   @override
@@ -220,7 +256,6 @@ class _LiveAttendancePageState extends State<LiveAttendancePage>
         title: Text("Live: ${widget.sessionName}"),
         backgroundColor: Colors.deepPurple[800],
         foregroundColor: Colors.white,
-        // أضيفي هذا الجزء هنا 👇
         actions: [
           IconButton(
             icon: const Icon(Icons.picture_as_pdf),
@@ -237,7 +272,7 @@ class _LiveAttendancePageState extends State<LiveAttendancePage>
             colors: [Color(0xFF1A237E), Color(0xFF4A148C), Color(0xFF311B92)],
           ),
         ),
-        // عرض الحالة المناسبة: تحميل / خطأ / البيانات
+        
         child: _isLoading
             ? const Center(child: CircularProgressIndicator(color: Colors.white))
             : _error.isNotEmpty
@@ -319,7 +354,7 @@ Widget _buildStudentCard(Map<String, dynamic> student) {
       title: Text(student['name'], style: const TextStyle(color: Colors.white, fontSize: 14)),
       subtitle: Text("ID: ${student['academic_id']}", style: const TextStyle(color: Colors.white70, fontSize: 12)),
       
-      // الزر المطلوب 👇
+      
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -331,9 +366,9 @@ Widget _buildStudentCard(Map<String, dynamic> student) {
             icon: const Icon(Icons.edit, color: Colors.white54, size: 18),
             onSelected: (String newValue) => _changeStatus(student['student_id'], newValue),
             itemBuilder: (context) => [
-              const PopupMenuItem(value: 'Present', child: Text('Present (حاضر)')),
-              const PopupMenuItem(value: 'Partially', child: Text('Partially (جزئي)')),
-              const PopupMenuItem(value: 'Absent', child: Text('Absent (غائب)')),
+              const PopupMenuItem(value: 'Present', child: Text('Present')),
+              const PopupMenuItem(value: 'Partially', child: Text('Partially')),
+              const PopupMenuItem(value: 'Absent', child: Text('Absent')),
             ],
           ),
         ],
