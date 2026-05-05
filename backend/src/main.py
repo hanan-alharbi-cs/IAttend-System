@@ -7,7 +7,7 @@ from sqlmodel import Session, select
 from supabase import create_client, Client
 from face_service import face_service_instance
 import os
-from datetime import datetime, timezone
+from datetime import datetime
 import numpy as np
 from dotenv import load_dotenv
 from creat_leacture import router as session_router
@@ -29,17 +29,15 @@ from schedule_service import process_course_schedule_manual
 from Rigeaster_face_biomatric import register_face_biometric
 from login import LoginRequest, perform_login
 
-# ---------------------------------------------
+
 # Database and Supabase Configuration
-# ---------------------------------------------
 load_dotenv()
 SUPABASE_URL = os.getenv("SUPABASE_URL") 
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# ----------------------------------------------------------------------------
+
 # Root
-# -----------------------------------------------------------------------------
 
 app = FastAPI(
     title="IAttend API",
@@ -61,9 +59,8 @@ def on_startup():
 
 app.include_router(session_router)
 
-# -----------------------------------------------------------------------------
+
 # Health Check
-# -----------------------------------------------------------------------------
 
 @app.get("/")
 async def root():
@@ -85,9 +82,8 @@ async def root():
         }
     }
 
-# -----------------------------------------------------------------------------
+
 # Request body schemas (API input)
-# -----------------------------------------------------------------------------
 
 class CreateAccount(BaseModel):
     username:str 
@@ -156,20 +152,29 @@ class EditSessionRequest(BaseModel):
     location_enabled: bool
     latitude: float | None = None
     longitude: float | None = None
+    session_type: str
 
+class LiveAttendanceStudent(BaseModel):
+    student_id: int
+    user_id: str
+    academic_id: int | None = None
+    name: str
+    status: str
+    check_in_time: str | None = None
 
-#--------------------------------------
+class AttendanceUpdate(BaseModel):
+    student_id: int
+    session_id: str
+    status: str
+
 #LOGIN
-#---------------------------------------
 @app.post("/login", tags=["Authentication"])
 async def login_endpoint(request: LoginRequest):
     return await perform_login(request, supabase)
 
     
-# -----------------------------------------------------------------------------
-# Face Biometric Registration
-# -----------------------------------------------------------------------------
 
+# Face Biometric Registration
 @app.post("/register-face", tags=["Face Biometric"])
 async def register_face_endpoint(
     user_id: str = Form(..., description="The student's unique ID"),
@@ -179,9 +184,8 @@ async def register_face_endpoint(
 
 
     
-# ----------------------------------------------------------------
-#  Academic
-# ----------------------------------------------------------------    
+
+#  Academic    
 @app.post("/submit-manual-schedule", tags=["Academic"])
 async def submit_manual_schedule(body: ManualScheduleRequest, session: Session = Depends(get_session_dep)):
     
@@ -193,10 +197,8 @@ async def submit_manual_schedule(body: ManualScheduleRequest, session: Session =
         session.rollback()
         print(f"Error in Schedule: {e}")
         return {"status": "Error", "message": "Someting Went Wrong"}
-#---------------------------------------------------------------
-#
-#---------------------------------------------------------------
 
+#scheule feching
 @app.get("/my-schedule/{user_id}", tags=["Academic"])
 async def get_user_schedule(user_id: str, session: Session = Depends(get_session_dep)):
     try:
@@ -247,9 +249,8 @@ async def get_user_schedule(user_id: str, session: Session = Depends(get_session
         print(f"DEBUG ERROR: {str(e)}")
         return {"status": "error", "message": f"Server error: {str(e)}"}
     
-# -----------------------------------------------------------------------------
-# Session Management
-# -----------------------------------------------------------------------------
+
+# get Session 
 @app.get("/get-sessions/{course_id}", tags=["Session Management"])
 async def get_sessions(course_id: int):
     try:
@@ -264,9 +265,8 @@ async def get_sessions(course_id: int):
             "status": "Error", 
             "message": str(e)
         }
-#---------------------------------------------------------------
+
 # Get session Location
-#---------------------------------------------------------------
 @app.get("/get-session-location/{session_id}", tags=["Attendance Tracking"])
 async def get_session_location(session_id: str):
     
@@ -282,10 +282,8 @@ async def get_session_location(session_id: str):
         print(f"Location Fetch Error: {e}")
         return {"status": "error","message":"Internal Server Error"}
     
-# -----------------------------------------------------------------------------
-# Update Session Status
-# -----------------------------------------------------------------------------
 
+# Update Session Status
 @app.post("/update-session-status/{session_id}", tags=["Session Management"])
 async def update_session_status(session_id: str, body: UpdateSessionStatusRequest):
     try:
@@ -303,15 +301,14 @@ async def update_session_status(session_id: str, body: UpdateSessionStatusReques
             "message": str(e)
         }
 
-# -----------------------------------------------------------------------------
-# Edit Session Settings 
-# -----------------------------------------------------------------------------
 
+# Edit Session Settings 
 @app.put("/edit-session/{session_id}", tags=["Session Management"])
 async def edit_session(session_id: str, body: EditSessionRequest):
     try:
         update_data = {
             "session_name": body.session_name,
+            "session_type": body.session_type,
             "latitude": body.latitude if body.location_enabled else None,
             "longitude": body.longitude if body.location_enabled else None,
         }
@@ -329,9 +326,8 @@ async def edit_session(session_id: str, body: EditSessionRequest):
     except Exception as e:
         print(f"DEBUG ERROR: {str(e)}")
         return {"status": "error", "message": str(e)}
-# ---------------------------------------------------------
-# Attendance Tracking
-# ---------------------------------------------------------
+
+#  Ragestier Attendance 
 @app.post("/mark-attendance", tags=["Attendance Tracking"])
 async def mark_attendance(
     session_id: str = Form(...),
@@ -393,10 +389,95 @@ async def mark_attendance(
     except Exception as e:
         return {"status": "error", "message": f"Internal Erro {str(e)}"}
         
+#show attendance   
+@app.get("/live-attendance/{session_id}", tags=["Attendance Tracking"])
+async def get_live_attendance(session_id: str, db_session: Session = Depends(get_session_dep)):
+    try:
+        
+        session_response = (
+            supabase.table("session")
+            .select("session_id, course_id, session_name, status")
+            .eq("session_id", session_id)
+            .maybe_single()
+            .execute()
+        )
+
+        if not session_response.data:
+            return {"status": "error", "message": "Session not found"}
+
+        
+        session_info = session_response.data
+        course_id = session_info.get("course_id")
+
+        
+        students_stmt = (
+            select(Student, User)
+            .join(Enrollment, Enrollment.student_id == Student.student_id)
+            .join(User, User.user_id == Student.user_id)
+            .where(Enrollment.course_id == course_id)
+            .order_by(User.academic_id)
+        )
+        student_rows = db_session.exec(students_stmt).all()
+        
+
+        
+        attendance_stmt = (
+            select(AttendanceRecord)
+            .where(AttendanceRecord.session_id == session_id)
+            .order_by(AttendanceRecord.timestamp.desc())
+        )
+        attendance_rows = db_session.exec(attendance_stmt).all()
+        
+
+        
+        latest_attendance_by_student: Dict[int, AttendanceRecord] = {}
+        for record in attendance_rows:
+            if record.student_id not in latest_attendance_by_student:
+                latest_attendance_by_student[record.student_id] = record
+
+        
+        students: List[LiveAttendanceStudent] = []
+        for student, user in student_rows:
+            
+            matched_record = latest_attendance_by_student.get(student.student_id)
+            students.append(
+                LiveAttendanceStudent(
+                    student_id=student.student_id,
+                    user_id=str(student.user_id),
+                    academic_id=user.academic_id,
+                    name=user.name,
+                    status=matched_record.status if matched_record else "Absent",
+                    check_in_time=matched_record.timestamp.isoformat() if matched_record and matched_record.timestamp else None,
+                )
+            )
+
+       
+        present_count = sum(1 for s in students if s.status.lower() == "present")
+
+        
+        return {
+            "status": "success",
+            "session": {
+                "session_id": session_info.get("session_id"),
+                "session_name": session_info.get("session_name"),
+                "course_id": course_id,
+                "session_status": session_info.get("status"),
+            },
+            "summary": {
+                "total_students": len(students),
+                "present_students": present_count,
+                "absent_students": len(students) - present_count,
+            },
+            "students": [s.dict() for s in students],
+        }
+    except Exception as e:
+       
+        print(f"Live Attendance Error: {e}")
+        return {"status": "error", "message": f"Could not fetch live attendance: {str(e)}"}
     
- #----------------------------------------------------------------------------
- # Attendance history
- # ---------------------------------------------------------------------------   
+ 
+
+# Attendance history   
 @app.get("/students/{user_id}/attendance-history", tags=["Reporting"])
 async def get_student_attendance_history(user_id: str, session: Session = Depends(get_session_dep)):
     try:
@@ -416,10 +497,15 @@ async def get_student_attendance_history(user_id: str, session: Session = Depend
         stmt = select(AttendanceRecord).where(AttendanceRecord.student_id==internal_student_id)
         records = session.exec(stmt).all()
 
-        now = datetime.now(timezone.utc)
+        now = datetime.now()
         start_of_today = datetime(now.year, now.month, now.day)
         start_of_week = start_of_today - timedelta(days=now.weekday())
         start_of_semester = now - timedelta(days=120)
+
+        def is_after(record_date, threshold):
+            if record_date is None: return False
+    
+            return record_date.replace(tzinfo=None) >= threshold
 
         daily_records = [r for r in records if r.timestamp and r.timestamp >= start_of_today]
         weekly_records = [r for r in records if r.timestamp and r.timestamp >= start_of_week]
@@ -444,11 +530,40 @@ async def get_student_attendance_history(user_id: str, session: Session = Depend
     except Exception as e:
         return {"status": "error", "message": str(e)}
 
+#update atendanc
+@app.patch("/update-student-status", tags=["Attendance Tracking"])
+async def update_student_status(data: AttendanceUpdate, db_session: Session = Depends(get_session_dep)):
+    try:
+        
+        stmt = select(AttendanceRecord).where(
+            AttendanceRecord.session_id == data.session_id,
+            AttendanceRecord.student_id == data.student_id
+        )
+        existing_record = db_session.exec(stmt).first()
 
-# -----------------------------------------------------------------------------
+        if existing_record:
+            
+            existing_record.status = data.status
+            db_session.add(existing_record)
+        else:
+            
+            new_record = AttendanceRecord(
+                student_id=data.student_id,
+                session_id=data.session_id,
+                status=data.status,
+                timestamp=datetime.now() 
+            )
+            db_session.add(new_record)
+        
+        db_session.commit()
+        return {"status": "success", "message": f"Status updated to {data.status}"}
+        
+    except Exception as e:
+        db_session.rollback()
+        print(f"Update Error: {e}")
+        return {"status": "error", "message": str(e)}
+
 # Reporting
-# -----------------------------------------------------------------------------
-
 @app.get("/attendance-report/{session_id}", tags=["Reporting"])
 async def get_attendance_report(session_id: int, session: Session = Depends(get_session_dep)):
     try:
@@ -491,10 +606,8 @@ async def generate_report(body: GenerateReportRequest, session: Session = Depend
         return {"status": "error", "message": str(e)}
 
 
-# -----------------------------------------------------------------------------
-# Communication
-# -----------------------------------------------------------------------------
 
+# Communication
 @app.post("/send-notification", tags=["Communication"])
 async def send_notification(body: SendNotificationRequest, session: Session = Depends(get_session_dep)):
     try:
