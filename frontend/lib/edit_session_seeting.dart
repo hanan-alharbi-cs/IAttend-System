@@ -34,7 +34,8 @@ class _editSessionPageState extends State<editSessionPage>
     super.initState();
     
     _nameController.text = widget.sessionData['session_name'] ?? "";
-    isOnline = !(widget.sessionData['location_enabled'] ?? true);
+    //isOnline = !(widget.sessionData['location_enabled'] ?? true);
+    isOnline = widget.sessionData['session_type'] == "Online";
     _latitude = widget.sessionData['latitude'];
     _longitude = widget.sessionData['longitude'];
   }
@@ -94,6 +95,7 @@ class _editSessionPageState extends State<editSessionPage>
           "location_enabled": !isOnline,
           "latitude": isOnline ? null : _latitude,
           "longitude": isOnline ? null : _longitude,
+          "session_type": isOnline ? "Online" : "In-Person",
         }),
       );
 
@@ -101,7 +103,7 @@ class _editSessionPageState extends State<editSessionPage>
       {
         Navigator.pop(context, true); 
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Session updated successfully!"), backgroundColor: Colors.green),
+          const SnackBar(content: Text("Session updated successfully"), backgroundColor: Colors.green),
         );
       } 
       else 
