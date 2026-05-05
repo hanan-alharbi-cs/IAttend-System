@@ -25,6 +25,7 @@ class CreateSessionRequest(BaseModel):
     location_enabled: bool
     latitude: float | None = None
     longitude: float | None = None
+    session_type: str
 
 
 @router.post("/create-session-full")
@@ -33,11 +34,7 @@ def create_session(body: CreateSessionRequest):
     # check time is correct
     if body.end_time <= body.start_time:
         raise HTTPException(status_code=400, detail="invalid time")
-    faculty_data = supabase.table("faculty") \
-        .select("faculty_id") \
-        .eq("user_id", body.user_id) \
-        .maybe_single() \
-        .execute()
+    faculty_data = supabase.table("faculty").select("faculty_id").eq("user_id", body.user_id).maybe_single().execute()
 
     if not faculty_data.data:
         raise HTTPException(status_code=404, detail="Faculty not found")
@@ -62,6 +59,7 @@ def create_session(body: CreateSessionRequest):
     data = {
         "course_id": body.course_id,
         "session_name": body.session_name,
+        "session_type": body.session_type,
         "start_time": body.start_time.isoformat(),
         "end_time": body.end_time.isoformat(),
         "status": "ended",
