@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'FacultySessionsPage.dart';
 import 'upload_schedule_page.dart';
-import 'attendance_report_screen.dart';
+
 
 class FacultyHomePage extends StatefulWidget 
 {
@@ -37,14 +37,7 @@ class _FacultyHomePageState extends State<FacultyHomePage>
   }
   
 
-  void _navigateToReports()
-  {
-  Navigator.of(context).push(
-    MaterialPageRoute(
-      builder: (context) => const AttendanceReportScreen(),
-    ),
-  );
-  }
+  
 
   void _navigateToCourseSessions(String courseId, String courseName) 
   {
@@ -223,15 +216,7 @@ class _FacultyHomePageState extends State<FacultyHomePage>
                 _navigateToUploadSchedule();
               },
             ),
-            ListTile(
-              leading: const Icon(Icons.analytics, color: Colors.deepPurple),
-              title: const Text('Attendance Reports'),
-              onTap: () 
-              {
-                Navigator.pop(context);
-                _navigateToReports();
-              },
-            ),
+            
             const Divider(),
             ListTile(
               leading: const Icon(Icons.logout, color: Colors.red),
