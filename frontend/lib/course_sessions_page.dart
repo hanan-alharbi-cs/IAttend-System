@@ -135,7 +135,8 @@ class _CourseSessionsPageState extends State<CourseSessionsPage>
                                               ? () {
                                                   AttendanceOrchestrator.startCheckIn(
                                                   context: context,
-                                                  sessionId: session['session_id'], 
+                                                  sessionId: session['session_id'],
+                                                  sessionType: session['session_type'],
                                                   );
                                                 }
                                               : null,
@@ -158,6 +159,7 @@ class _CourseSessionsPageState extends State<CourseSessionsPage>
                                               ? ()=> AttendanceOrchestrator.startCheckOut(
                                                  context: context, 
                                                  sessionId: session['session_id'],
+                                                 sessionType: session['session_type'],
                                                 )
                                                 : null,
                                           icon: const Icon(Icons.logout),
