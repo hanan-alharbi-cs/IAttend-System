@@ -8,6 +8,7 @@ class AttendanceOrchestrator
   static Future<void> startCheckIn({
     required BuildContext context,
     required String sessionId,
+    required String sessionType,
   }) async
    {
     
@@ -20,34 +21,44 @@ class AttendanceOrchestrator
       return;
     }
 
-    
-    _showLoadingDialog(context, "Your Current Location is Being Verivied...");
-    bool isInLocation = await LocationService().verifyStudentLocation(sessionId.toString());
-  
-    Navigator.of(context, rootNavigator: true).pop();
-
-    if (!isInLocation) 
+    bool proceed = false;
+    if (sessionType == 'Online') 
     {
-      _showSnackBar(context, "Invalid Location", Colors.orange);
-      return; 
+      proceed = true; 
     }
+    else 
+    {
+     _showLoadingDialog(context, "Your Current Location is Being Verivied...");
+     bool isInLocation = await LocationService().verifyStudentLocation(sessionId.toString());
+  
+     Navigator.of(context, rootNavigator: true).pop();
 
-    
-    
-    final bool? isSuccess = await Navigator.push<bool>(
+     if (!isInLocation) 
+     {
+       _showSnackBar(context, "Invalid Location", Colors.orange);
+       return; 
+     }
+
+     proceed = true;
+  
+    }
+    if(proceed)
+    {
+      final bool? isSuccess = await Navigator.push<bool>(
       context,
       MaterialPageRoute(
         builder: (context) => FaceVerificationPage(
           sessionId: sessionId,
           userId: userId,
-        ),
-      ),
-    );
+         ),
+       ),
+     );
 
     
-    if (isSuccess == true) 
-    {
+     if (isSuccess == true) 
+     {
       _showSnackBar(context, "Attendance Successfully Recorded", Colors.green);
+     }
     }
   }
 
@@ -62,8 +73,15 @@ class AttendanceOrchestrator
 static Future<void> startCheckOut({
   required BuildContext context,
   required String sessionId,
-}) async {
-  
+  required String sessionType,
+}) async 
+{
+  if (sessionType == 'Online') 
+  {
+    _showSnackBar(context, "Check-out Successful", Colors.green);
+    return;
+  }
+
   _showLoadingDialog(context, "Verifying location for check-out...");
   bool isInLocation = await LocationService().verifyStudentLocation(sessionId.toString());
   Navigator.of(context, rootNavigator: true).pop();
