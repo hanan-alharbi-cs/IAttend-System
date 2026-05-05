@@ -5,8 +5,9 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-// تعريف الألوان والتدرجات اللونية المستخدمة في التطبيق
-class AppColors {
+
+class AppColors 
+{
   static const Color primaryDark = Color(0xFF170036);
   static const Color primaryPurple = Color(0xFF4C1D95);
   static const Color cardBackground = Color(0xFFEDEBFF);
@@ -21,8 +22,9 @@ class AppColors {
   );
 }
 
-// نموذج لبيانات سجل الحضور الفردي
-class AttendanceRecordItem {
+
+class AttendanceRecordItem 
+{
   final String sessionId;
   final String status;
   final String? timestamp;
@@ -33,7 +35,8 @@ class AttendanceRecordItem {
     this.timestamp,
   });
 
-  factory AttendanceRecordItem.fromJson(Map<String, dynamic> json) {
+  factory AttendanceRecordItem.fromJson(Map<String, dynamic> json) 
+  {
     return AttendanceRecordItem(
       sessionId: json['session_id'] ?? '',
       status: json['status'] ?? 'Unknown',
@@ -42,8 +45,9 @@ class AttendanceRecordItem {
   }
 }
 
-// نموذج لاستجابة سجل الحضور التي تحتوي على القوائم اليومية والأسبوعية والفصلية
-class AttendanceHistoryResponse {
+
+class AttendanceHistoryResponse 
+{
   final List<AttendanceRecordItem> daily;
   final List<AttendanceRecordItem> weekly;
   final List<AttendanceRecordItem> semester;
@@ -54,7 +58,8 @@ class AttendanceHistoryResponse {
     required this.semester,
   });
 
-  factory AttendanceHistoryResponse.fromJson(Map<String, dynamic> json) {
+  factory AttendanceHistoryResponse.fromJson(Map<String, dynamic> json) 
+  {
     return AttendanceHistoryResponse(
       daily: (json['daily'] as List? ?? [])
           .map((i) => AttendanceRecordItem.fromJson(i))
@@ -69,7 +74,7 @@ class AttendanceHistoryResponse {
   }
 }
 
-// الصفحة الرئيسية لعرض سجل الحضور
+
 class ViewAttendanceHistoryPage extends StatefulWidget {
   const ViewAttendanceHistoryPage({super.key, this.userId});
   final String? userId; // recive user id
@@ -83,64 +88,78 @@ class _ViewAttendanceHistoryPageState extends State<ViewAttendanceHistoryPage>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
 
-  final String baseUrl = ApiConstsnts.baseUrl; // رابط الواجهة البرمجية الأساسي
-  bool _isLoading = false; // حالة التحميل
-  String? _error; // رسالة الخطأ في حال حدوثه
-  AttendanceHistoryResponse? _history; // البيانات المستلمة للسجل
+  final String baseUrl = ApiConstsnts.baseUrl; 
+  bool _isLoading = false; 
+  String? _error; 
+  AttendanceHistoryResponse? _history; 
 
   @override
   void initState() {
     super.initState();
-    // تهيئة المتحكم في التبويبات (يومي، أسبوعي، فصلي)
+    
     _tabController = TabController(length: 3, vsync: this);
-    _loadHistory(); // تحميل البيانات عند بدء الصفحة
+    _loadHistory(); 
   }
 
   @override
-  void dispose() {
+  void dispose() 
+  {
     _tabController
-        .dispose(); // التخلص من المتحكم عند إغلاق الصفحة لتوفير الذاكرة
+        .dispose(); 
     super.dispose();
   }
 
   // دالة لجلب بيانات سجل الحضور من الخادم
-  Future<void> _loadHistory() async {
+  Future<void> _loadHistory() async 
+  {
     String? studentId = widget.userId;
-    if (studentId == null || studentId.isEmpty) {
+    if (studentId == null || studentId.isEmpty) 
+    {
       final prefs = await SharedPreferences.getInstance();
       studentId = prefs.getString("user_id");
     }
     if (studentId == null || studentId.isEmpty) return;
-    setState(() {
+    setState(() 
+    {
       _isLoading = true;
       _error = null;
     });
 
-    try {
-      // نستخدم http مباشرة بدل _api لإرسال طلب الجلب
+    try 
+    {
+      
       final response = await http.get(
         Uri.parse("$baseUrl/students/$studentId/attendance-history"),
       );
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200) 
+      {
         final data = jsonDecode(response.body);
         print(data);
-        setState(() {
+        setState(() 
+        {
           _history = AttendanceHistoryResponse.fromJson(data);
         });
-      } else {
+      } 
+      else 
+      {
         setState(() => _error = "Error: ${response.statusCode}");
       }
-    } catch (e) {
+    } 
+    catch (e) 
+    {
       setState(() => _error = e.toString());
-    } finally {
+    }
+    finally 
+    {
       setState(() => _isLoading = false);
     }
   }
 
   @override
-  Widget build(BuildContext context) {
-    // واجهة المستخدم الرئيسية مع خلفية متدرجة
+  Widget build(BuildContext context) 
+  {
+    
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.deepPurple[800],
