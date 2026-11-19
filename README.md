@@ -74,32 +74,33 @@ IAttend follows a client-server architecture:
 - **Database:** Supabase with PostgreSQL stores user information, facial data, and attendance records.
 - **Storage:** Supabase Storage manages uploaded files.
 
-## Screenshots
+## Project Screenshots
 
 The following screenshots showcase the main interfaces and features of the IAttend system.
 
 ![Get Started Screen](https://raw.githubusercontent.com/hanan-alharbi-cs/IAttend-System/main/screenshots/Get%20Started%20screen.png)
-![Attendance History](screenshots/Attendance%20History%20screen.png)
 
-![Attendance Reports](screenshots/Attendance%20Reports%20screen.jpg)
+![Attendance History](https://raw.githubusercontent.com/hanan-alharbi-cs/IAttend-System/main/screenshots/Attendance%20History%20screen.png)
 
-![Course Sessions](screenshots/Course%20Sessions%20screen.png)
+![Attendance Reports](https://raw.githubusercontent.com/hanan-alharbi-cs/IAttend-System/main/screenshots/Attendance%20Reports%20screen.jpg)
 
-![Error Screen](screenshots/Error%20screen.png)
+![Course Sessions](https://raw.githubusercontent.com/hanan-alharbi-cs/IAttend-System/main/screenshots/Course%20Sessions%20screen.png)
 
-![Login Error Screen](screenshots/LogIn%20Error%20Screen.png)
+![Error Screen](https://raw.githubusercontent.com/hanan-alharbi-cs/IAttend-System/main/screenshots/Error%20screen.png)
 
-![On-Person Attendance Session](screenshots/On-Person%20attendance%20session.png)
+![Login Error Screen](https://raw.githubusercontent.com/hanan-alharbi-cs/IAttend-System/main/screenshots/LogIn%20Error%20Screen.png)
 
-![Student Home Screen](screenshots/Student%20Home%20screen.png)
+![On-Person Attendance Session](https://raw.githubusercontent.com/hanan-alharbi-cs/IAttend-System/main/screenshots/On-Person%20attendance%20session.png)
 
-![Face Registration](screenshots/Students%20register%20their%20face.png)
+![Student Home Screen](https://raw.githubusercontent.com/hanan-alharbi-cs/IAttend-System/main/screenshots/Student%20Home%20screen.png)
 
-![Online Session Creation](screenshots/creates%20an%20Online%20session.png)
+![Face Registration](https://raw.githubusercontent.com/hanan-alharbi-cs/IAttend-System/main/screenshots/Students%20register%20their%20face.png)
 
-![Live Attendance Monitoring](screenshots/monitors%20Live%20Attendance.png)
+![Online Session Creation](https://raw.githubusercontent.com/hanan-alharbi-cs/IAttend-System/main/screenshots/creates%20an%20Online%20session.png)
 
-![Schedule Upload](screenshots/uploads%20a%20schedule.png)
+![Live Attendance Monitoring](https://raw.githubusercontent.com/hanan-alharbi-cs/IAttend-System/main/screenshots/monitors%20Live%20Attendance.png)
+
+![Schedule Upload](https://raw.githubusercontent.com/hanan-alharbi-cs/IAttend-System/main/screenshots/uploads%20a%20schedule.png)
 
 ## My Contribution
 
