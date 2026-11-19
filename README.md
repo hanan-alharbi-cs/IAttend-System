@@ -79,6 +79,7 @@ IAttend follows a client-server architecture:
 The following screenshots showcase the main interfaces and features of the IAttend system.
 
 ![Get Started Screen](screenshots/Get%20Started%20screen.png)
+
 ![Attendance History](screenshots/Attendance%20History%20screen.png)
 
 ![Attendance Reports](screenshots/Attendance%20Reports%20screen.jpg)
