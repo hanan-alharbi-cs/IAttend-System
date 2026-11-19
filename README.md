@@ -141,3 +141,7 @@ The trained face verification model weights are available on Google Drive:
 - **University:** Taibah University
 - **Field:** Computer Science
 - **Project Team:** Collaborative Team Project
+
+- ## Project Documentation
+
+- [View Final Project Report (PDF)](docs/IAttend-Project-Report.pdf)
