@@ -14,7 +14,9 @@ IAttend provides a unified mobile application with role-based interfaces for stu
 
 ## Project Preview
 
-<!-- Add actual application screenshots here -->
+Watch the IAttend project walkthrough video to explore the system's main features and user flow.
+
+[Watch IAttend Project Walkthrough](https://youtu.be/--7hJHmCb1k)
 
 ## Key Features
 
