@@ -52,7 +52,6 @@ IAttend uses a multi-factor verification approach:
 
 For online sessions, facial verification is used without location validation.
 
-![IAttend](screenshots/Get%20Started%20screen.png)
 
 ## Technology Stack
 
