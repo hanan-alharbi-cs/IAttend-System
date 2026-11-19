@@ -1,16 +1,20 @@
 # IAttend – Intelligent Attendance Management System
 
-## Problem Statement
-
-Traditional attendance systems in universities can be time-consuming, inefficient, and vulnerable to proxy attendance. Manual attendance recording also creates additional work for faculty members and makes attendance tracking less efficient.
-
 ## Project Overview
 
 IAttend is a smart attendance management system developed to improve attendance verification in higher education institutions.
 
-The system combines facial recognition and GPS-based location verification to ensure that students are both correctly identified and physically present at the lecture location when recording their attendance.
+The system combines facial recognition and GPS-based location verification to ensure that students are correctly identified and physically present at the lecture location when recording their attendance.
 
 IAttend provides a unified mobile application with role-based interfaces for students and faculty members, making attendance management more secure, efficient, and convenient.
+
+## Problem Statement
+
+Traditional attendance systems in universities can be time-consuming, inefficient, and vulnerable to proxy attendance. Manual attendance recording also creates additional work for faculty members and makes attendance tracking less efficient.
+
+## Proposed Solution
+
+IAttend provides an automated attendance management solution using facial recognition and location verification. This approach helps verify student identity and physical presence before recording attendance.
 
 ## Project Preview
 
@@ -21,6 +25,7 @@ Watch the IAttend project walkthrough video to explore the system's main feature
 ## Key Features
 
 ### Student Features
+
 - User account creation and login.
 - Facial verification for attendance check-in.
 - GPS-based location validation.
@@ -29,6 +34,7 @@ Watch the IAttend project walkthrough video to explore the system's main feature
 - Attendance confirmation and status updates.
 
 ### Faculty Features
+
 - Faculty account login.
 - Create and manage attendance sessions.
 - Course and session management.
@@ -68,49 +74,6 @@ IAttend follows a client-server architecture:
 - **Database:** Supabase with PostgreSQL stores user information, facial data, and attendance records.
 - **Storage:** Supabase Storage manages uploaded files.
 
-## My Contribution
-
-- Developed the database implementation (`database.py`).
-- Worked on user account creation and login functionality.
-- Implemented session creation and management.
-- Worked on face verification functionality.
-- Contributed to location verification.
-- Worked on attendance history and course session features.
-- Contributed to faculty session functionality.
-
-## Model Weights
-
-The pre-trained Siamese Network weights are hosted externally due to GitHub file size limitations.
-
-[Download Face Recognition Model Weights](https://drive.google.com/drive/folders/1jfJhwT7-lW_qHmVosvwFKDR7Eq-vOymX?usp=sharing)
-
-## Project Structure
-
-```text
-IAttend-System/
-│
-├── frontend/
-│   └── Flutter Mobile Application
-│
-├── backend/
-│   └── FastAPI Backend
-│
-└── README.md
-```
-
-## Project Information
-
-- **Project Type:** Graduation Project
-- **University:** Taibah University
-- **Field:** Computer Science
-- **Project Team:** Collaborative Team Project
-
-- ## Model Weights
-
-The trained face verification model weights are available on Google Drive:
-
-[Download Model Weights](https://drive.google.com/drive/folders/1jfJhwT7-lW_qHmVosvwFKDR7Eq-vOymX?usp=sharing)
-
 ## Screenshots
 
 The following screenshots showcase the main interfaces and features of the IAttend system.
@@ -138,3 +101,43 @@ The following screenshots showcase the main interfaces and features of the IAtte
 ![Live Attendance Monitoring](screenshots/monitors%20Live%20Attendance.png)
 
 ![Schedule Upload](screenshots/uploads%20a%20schedule.png)
+
+## My Contribution
+
+- Developed the database implementation (`database.py`).
+- Worked on user account creation and login functionality.
+- Implemented session creation and management.
+- Worked on face verification functionality.
+- Contributed to location verification.
+- Worked on attendance history and course session features.
+- Contributed to faculty session functionality.
+
+## Project Structure
+
+```text
+IAttend-System/
+│
+├── frontend/
+│   └── Flutter Mobile Application
+│
+├── backend/
+│   └── FastAPI Backend
+│
+├── screenshots/
+│   └── Project interface screenshots
+│
+└── README.md
+```
+
+## Model Weights
+
+The trained face verification model weights are available on Google Drive:
+
+[Download Face Recognition Model Weights](https://drive.google.com/drive/folders/1jfJhwT7-lW_qHmVosvwFKDR7Eq-vOymX?usp=sharing)
+
+## Project Information
+
+- **Project Type:** Graduation Project
+- **University:** Taibah University
+- **Field:** Computer Science
+- **Project Team:** Collaborative Team Project
