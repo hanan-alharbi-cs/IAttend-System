@@ -20,6 +20,7 @@ IAttend provides an automated attendance management solution using facial recogn
 
 Watch the IAttend project walkthrough video to explore the system's main features and user flow.
 
+[▶ Watch IAttend Project Walkthrough](https://youtu.be/--7hJHmCb1k)
 
 ## Key Features
 
@@ -52,7 +53,6 @@ IAttend uses a multi-factor verification approach:
 
 For online sessions, facial verification is used without location validation.
 
-
 ## Technology Stack
 
 | Component | Technologies |
@@ -77,7 +77,6 @@ IAttend follows a client-server architecture:
 ## Project Screenshots
 
 The following screenshots showcase the main interfaces and features of the IAttend system.
-
 
 ![Attendance History](https://raw.githubusercontent.com/hanan-alharbi-cs/IAttend-System/main/screenshots/Attendance%20History%20screen.png)
 
@@ -141,8 +140,6 @@ The trained face verification model weights are available on Google Drive:
 - **Field:** Computer Science
 - **Project Team:** Collaborative Team Project
 
-- ## Project Documentation
-
 ## Project Documentation
 
-- [View Final Project Report (PDF)](docs/IAttend-Project-Report.pdf)
+[View Final Project Report (PDF)](docs/IAttend-Project-Report.pdf)
