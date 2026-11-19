@@ -110,3 +110,31 @@ IAttend-System/
 The trained face verification model weights are available on Google Drive:
 
 [Download Model Weights](https://drive.google.com/drive/folders/1jfJhwT7-lW_qHmVosvwFKDR7Eq-vOymX?usp=sharing)
+
+## Screenshots
+
+The following screenshots showcase the main interfaces and features of the IAttend system.
+
+![Get Started Screen](screenshots/Get%20Started%20screen.png)
+
+![Attendance History](screenshots/Attendance%20History%20screen.png)
+
+![Attendance Reports](screenshots/Attendance%20Reports%20screen.jpg)
+
+![Course Sessions](screenshots/Course%20Sessions%20screen.png)
+
+![Error Screen](screenshots/Error%20screen.png)
+
+![Login Error Screen](screenshots/LogIn%20Error%20Screen.png)
+
+![On-Person Attendance Session](screenshots/On-Person%20attendance%20session.png)
+
+![Student Home Screen](screenshots/Student%20Home%20screen.png)
+
+![Face Registration](screenshots/Students%20register%20their%20face.png)
+
+![Online Session Creation](screenshots/creates%20an%20Online%20session.png)
+
+![Live Attendance Monitoring](screenshots/monitors%20Live%20Attendance.png)
+
+![Schedule Upload](screenshots/uploads%20a%20schedule.png)
