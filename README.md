@@ -20,7 +20,6 @@ IAttend provides an automated attendance management solution using facial recogn
 
 Watch the IAttend project walkthrough video to explore the system's main features and user flow.
 
-[Watch IAttend Project Walkthrough](https://youtu.be/--7hJHmCb1k)
 
 ## Key Features
 
