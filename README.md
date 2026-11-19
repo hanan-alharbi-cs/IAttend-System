@@ -143,4 +143,6 @@ The trained face verification model weights are available on Google Drive:
 
 - ## Project Documentation
 
+## Project Documentation
+
 - [View Final Project Report (PDF)](docs/IAttend-Project-Report.pdf)
