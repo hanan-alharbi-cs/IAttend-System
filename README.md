@@ -102,3 +102,9 @@ IAttend-System/
 - **University:** Taibah University
 - **Field:** Computer Science
 - **Project Team:** Collaborative Team Project
+
+- ## Model Weights
+
+The trained face verification model weights are available on Google Drive:
+
+[Download Model Weights](https://drive.google.com/drive/folders/1jfJhwT7-lW_qHmVosvwFKDR7Eq-vOymX?usp=sharing)
