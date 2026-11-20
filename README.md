@@ -1,145 +1,128 @@
-# IAttend – Intelligent Attendance Management System
+IAttend – Intelligent Attendance Management System
+IAttend is a mobile-based attendance management system for higher education institutions. It combines facial verification with GPS-based location validation to help confirm a student's identity and presence before an attendance record is submitted.
 
-## Project Overview
+The system provides separate workflows for students and faculty members, including face registration, attendance sessions, course and schedule management, live attendance monitoring, attendance history, and PDF reports.
+Project Links
+- GitHub Repository: hanan-alharbi-cs/IAttend-System
+- Project Walkthrough Video: Watch the IAttend walkthrough
+- Project Report: [View the final project report](docs/IAttend-Project-Report.pdf)
+- Face Verification Model Weights: Access the trained model weights
+The video is a project walkthrough explaining the system and its user flow; it is not presented as a live interactive demo.
 
-IAttend is a smart attendance management system developed to improve attendance verification in higher education institutions.
+Problem Statement
+Traditional attendance processes can be time-consuming and may allow proxy attendance. Manual recording also adds administrative work for faculty members and makes it harder to manage attendance records across courses and sessions.
+Proposed Solution
+IAttend automates attendance workflows through two verification factors:
+1. Facial verification to check the student's identity.
+2. GPS-based location validation to check whether the student is within the permitted attendance location when location verification is enabled.
+Faculty members can create and manage sessions and choose whether location validation is required. For online sessions, the system can use facial verification without location validation.
+Key Features
+Student Features
+- Create an account and log in.
+- Register a face image for facial verification.
+- Complete attendance check-in using facial verification.
+- Validate attendance location using GPS when required.
+- View course sessions and attendance history.
+- Upload course schedules.
+- View attendance status and confirmation.
+Faculty Features
+- Faculty account login and role-based access.
+- Create, edit, and manage attendance sessions.
+- Manage course sessions and session settings.
+- Enable or disable location verification according to the session type.
+- Monitor live attendance.
+- Review attendance records and history.
+- Generate PDF attendance reports.
+How It Works
+IAttend follows a multi-factor attendance verification workflow:
+1. Face Registration: A student selects a facial image in the mobile application and submits it to the backend for processing and enrollment.
+2. Face Detection and Verification: The face-processing workflow uses OpenCV for image handling and a FaceNet-based Siamese model for face representation and matching. MTCNN is used in the model training/testing workflow for face detection.
+3. Face Matching: The face-verification service compares face representations using Euclidean distance to support the matching decision.
+4. Location Validation: The Flutter application obtains the device's current position using the Geolocator package. The Haversine formula is used to calculate the distance between the student and the lecture location.
+5. Attendance Recording: When the required verification checks are satisfied, the attendance workflow submits the record to the backend.
+For online sessions, location validation can be disabled while facial verification remains available.
+Technology Stack
+Component	Technologies
+Mobile Application	Flutter, Dart
+Mobile UI & Device Features	Flutter Material, Camera, Image Picker, Shared Preferences
+Mobile Networking & Uploads	HTTP, http_parser
+Backend API	Python, FastAPI, Uvicorn, Pydantic, python-multipart
+Database Layer	SQLModel, SQLAlchemy
+Backend Data Services	Supabase client, PostgreSQL, Supabase Storage
+Face Recognition	FaceNet (InceptionResNetV1), Siamese Network, Keras-FacNet
+Computer Vision & Image Processing	OpenCV, MTCNN, Pillow, NumPy
+Model Development & Evaluation	TensorFlow, Keras, scikit-learn, SciPy, Pandas
+Model Evaluation & Visualization	Matplotlib, Seaborn, tqdm
+Location Services	Geolocator, Haversine formula
+Reports & File Handling	PDF, Printing, File Picker
 
-The system combines facial recognition and GPS-based location verification to ensure that students are correctly identified and physically present at the lecture location when recording their attendance.
 
-IAttend provides a unified mobile application with role-based interfaces for students and faculty members, making attendance management more secure, efficient, and convenient.
-
-## Problem Statement
-
-Traditional attendance systems in universities can be time-consuming, inefficient, and vulnerable to proxy attendance. Manual attendance recording also creates additional work for faculty members and makes attendance tracking less efficient.
-
-## Proposed Solution
-
-IAttend provides an automated attendance management solution using facial recognition and location verification. This approach helps verify student identity and physical presence before recording attendance.
-
-## Project Preview
-
-Watch the IAttend project walkthrough video to explore the system's main features and user flow.
-
-[▶ Watch IAttend Project Walkthrough](https://youtu.be/--7hJHmCb1k)
-
-## Key Features
-
-### Student Features
-
-- User account creation and login.
-- Facial verification for attendance check-in.
-- GPS-based location validation.
-- Attendance history tracking.
-- Course management.
-- Attendance confirmation and status updates.
-
-### Faculty Features
-
-- Faculty account login.
-- Create and manage attendance sessions.
-- Course and session management.
-- Enable or disable location verification depending on session type.
-- Real-time attendance monitoring.
-- Attendance record management.
-- PDF attendance reports.
-
-## How It Works
-
-IAttend uses a multi-factor verification approach:
-
-1. **Face Verification:** The system verifies the student's identity using a FaceNet-based Siamese Network.
-2. **Location Verification:** The student's current GPS coordinates are compared with the classroom location using the Haversine Formula.
-3. **Attendance Recording:** Once the required verification steps are completed, the attendance record is updated and the student receives a confirmation.
-
-For online sessions, facial verification is used without location validation.
-
-## Technology Stack
-
-| Component | Technologies |
-|---|---|
-| Mobile Application | Flutter, Dart |
-| Backend | Python, FastAPI |
-| Database | Supabase, PostgreSQL |
-| Authentication & Storage | Supabase |
-| Face Recognition | FaceNet (InceptionResNetV1), Siamese Network |
-| Machine Learning | TensorFlow, Keras |
-| Location Services | Geolocator API, Haversine Formula |
-
-## System Architecture
-
+Model Development and Evaluation
+The repository includes model training and testing scripts in addition to the application code. These scripts use TensorFlow/Keras and FaceNet for the face-verification model workflow, MTCNN for face detection, and scikit-learn metrics to evaluate model results. Pandas, NumPy, SciPy, Pillow, Matplotlib, Seaborn, and tqdm are also used in the data preparation, image-processing, evaluation, or visualization scripts.
+System Architecture
 IAttend follows a client-server architecture:
-
-- **Frontend:** Flutter mobile application for students and faculty.
-- **Backend:** FastAPI handles application requests, attendance processing, facial verification, and location validation.
-- **Database:** Supabase with PostgreSQL stores user information, facial data, and attendance records.
-- **Storage:** Supabase Storage manages uploaded files.
-
-## Project Screenshots
-
+- Flutter Mobile Application: Provides student and faculty interfaces, captures or selects face images, accesses device location, communicates with the backend, and displays attendance information.
+- FastAPI Backend: Exposes API endpoints for authentication-related workflows, face registration and verification, session management, schedule processing, and attendance operations.
+- Face Verification Pipeline: Uses TensorFlow/Keras with a FaceNet-based Siamese model, alongside OpenCV and NumPy for image-processing tasks.
+- Database Layer: Uses SQLModel/SQLAlchemy for database models and operations. Supabase services are integrated for application data and storage; PostgreSQL is used as the database service.
+- Location Verification: Uses Geolocator in the mobile application and the Haversine formula for distance calculation.
+Project Screenshots
 The following screenshots showcase the main interfaces and features of the IAttend system.
+Attendance History
 
-![Attendance History](https://raw.githubusercontent.com/hanan-alharbi-cs/IAttend-System/main/screenshots/Attendance%20History%20screen.png)
+Attendance Reports
 
-![Attendance Reports](https://raw.githubusercontent.com/hanan-alharbi-cs/IAttend-System/main/screenshots/Attendance%20Reports%20screen.jpg)
+Course Sessions
 
-![Course Sessions](https://raw.githubusercontent.com/hanan-alharbi-cs/IAttend-System/main/screenshots/Course%20Sessions%20screen.png)
+Error Screen
 
-![Error Screen](https://raw.githubusercontent.com/hanan-alharbi-cs/IAttend-System/main/screenshots/Error%20screen.png)
+Login Error Screen
 
-![Login Error Screen](https://raw.githubusercontent.com/hanan-alharbi-cs/IAttend-System/main/screenshots/LogIn%20Error%20Screen.png)
+On-Person Attendance Session
 
-![On-Person Attendance Session](https://raw.githubusercontent.com/hanan-alharbi-cs/IAttend-System/main/screenshots/On-Person%20attendance%20session.png)
+Student Home Screen
 
-![Student Home Screen](https://raw.githubusercontent.com/hanan-alharbi-cs/IAttend-System/main/screenshots/Student%20Home%20screen.png)
+Face Registration
 
-![Face Registration](https://raw.githubusercontent.com/hanan-alharbi-cs/IAttend-System/main/screenshots/Students%20register%20their%20face.png)
+Online Session Creation
 
-![Online Session Creation](https://raw.githubusercontent.com/hanan-alharbi-cs/IAttend-System/main/screenshots/creates%20an%20Online%20session.png)
+Live Attendance Monitoring
 
-![Live Attendance Monitoring](https://raw.githubusercontent.com/hanan-alharbi-cs/IAttend-System/main/screenshots/monitors%20Live%20Attendance.png)
+Schedule Upload
 
-![Schedule Upload](https://raw.githubusercontent.com/hanan-alharbi-cs/IAttend-System/main/screenshots/uploads%20a%20schedule.png)
-
-## My Contribution
-
-- Developed the database implementation (`database.py`).
-- Worked on user account creation and login functionality.
-- Implemented session creation and management.
-- Worked on face verification functionality.
-- Contributed to location verification.
-- Worked on attendance history and course session features.
-- Contributed to faculty session functionality.
-
-## Project Structure
-
-```text
+My Contribution
+My contributions to the collaborative graduation project included:
+- Developing the database implementation in database.py and working with the SQLModel database models.
+- Implementing and supporting user account creation and login workflows.
+- Implementing attendance session creation and management.
+- Working on face registration and face-verification functionality.
+- Contributing to GPS-based location verification.
+- Working on attendance history and course-session features.
+- Contributing to faculty session functionality and attendance workflows.
+Project Structure
 IAttend-System/
 │
-├── frontend/
-│   └── Flutter Mobile Application
-│
 ├── backend/
-│   └── FastAPI Backend
+│   ├── ai_lab/                 # Face-verification model training scripts
+│   ├── src/                    # FastAPI application and backend services
+│   ├── weights/                # Model-weight access information
+│   └── requirements.txt        # Python dependencies
 │
-├── screenshots/
-│   └── Project interface screenshots
+├── frontend/
+│   ├── lib/                    # Flutter application screens and services
+│   ├── pubspec.yaml            # Flutter dependencies
+│   └── pubspec.lock
 │
+├── docs/
+│   └── IAttend-Project-Report.pdf
+│
+├── screenshots/                # Project interface screenshots
 └── README.md
-```
-
-## Model Weights
-
-The trained face verification model weights are available on Google Drive:
-
-[Download Face Recognition Model Weights](https://drive.google.com/drive/folders/1jfJhwT7-lW_qHmVosvwFKDR7Eq-vOymX?usp=sharing)
-
-## Project Information
-
-- **Project Type:** Graduation Project
-- **University:** Taibah University
-- **Field:** Computer Science
-- **Project Team:** Collaborative Team Project
-
-## Project Documentation
-
-[View Final Project Report (PDF)](docs/IAttend-Project-Report.pdf)
+Project Information
+- Project Type: Graduation Project
+- University: Taibah University
+- Field: Computer Science
+- Project Team: Collaborative Team Project
+Notes on Dependencies
+The backend requirements file and Flutter dependency manifest describe the application dependencies. Some libraries used by the model training and evaluation scripts (including MTCNN, SciPy, Pandas, scikit-learn, Matplotlib, Seaborn, and tqdm) are referenced by source files but are not all currently listed in backend/requirements.txt. Add the required packages to that file before expecting a clean environment setup for every training and evaluation script.
+IAttend – Combining Facial Verification and Location Validation for Smarter Attendance Management.
